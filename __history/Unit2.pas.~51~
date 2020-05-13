@@ -1,0 +1,124 @@
+unit Unit2;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.ComCtrls;
+
+type
+  TForm2 = class(TForm)
+    Image1: TImage;
+    ColorBox1: TColorBox;
+    Button1: TButton;
+    Button2: TButton;
+    TB1: TTrackBar;
+    Memo1: TMemo;
+    safetext: TButton;
+    procedure Image1MouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+    procedure TB1Change(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure safetextClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+const
+    MaxPixelCount   =  32768;
+
+type
+    pRGBArray  =  ^TRGBArray;
+    TRGBArray  =  ARRAY[0..MaxPixelCount-1] OF TRGBTriple;
+var
+    bitmap : TBitmap;
+    bitarr : array of pRGBArray;
+
+var
+  Form2: TForm2;
+  btm: array [1..10] of tbitmap ;
+  sozd: array [1..10] of boolean;
+  buf: string;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm2.Button1Click(Sender: TObject);
+begin
+ btm[tb1.Position]:= TBitMap.Create;
+ sozd[tb1.Position]:=true;
+ btm[tb1.Position].Width := 12; // —тавиш размеры желаймой картинки
+ btm[tb1.Position].Height := 5; // —тавиш размеры желаймой картинки
+ Btm[tb1.Position].Canvas.CopyRect(Btm[tb1.Position].Canvas.ClipRect,Image1.Canvas,Image1.Canvas.ClipRect);
+end;
+
+procedure TForm2.Button2Click(Sender: TObject);
+begin
+ image1.Canvas.CopyRect(Image1.Canvas.ClipRect,btm[5].canvas,Btm[5].Canvas.ClipRect );
+end;
+
+procedure TForm2.FormCreate(Sender: TObject);
+var
+  I: Integer;
+begin
+ for I := 1 to 10 do
+  sozd[i]:=false;
+end;
+
+procedure TForm2.Image1MouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+ image1.Canvas.Pixels[x div 10,y div 10]:=colorbox1.Selected;  //рисование
+end;
+
+procedure TForm2.safetextClick(Sender: TObject);
+var
+ i,i1: integer;
+  i2: Integer;
+  zap:string;  // буфер конечной приставки
+  i0: Integer;
+begin
+  memo1.Lines.Clear; //очистка мемо
+  for i0 := 1 to 10 do
+   begin
+    bitmap := btm[i0]; //буфер
+    setlength(bitarr, bitmap.height); // установка размера массива
+    bitmap.pixelformat := pf24bit;//конвертируем в DIB
+    for i := 0 to bitmap.Height - 1 do
+     bitarr[i] := bitmap.scanline[i];//ѕолучам адреса каждой строки (пор€док строк в битмапе обычно обратный)
+    memo1.Lines.Add('{');
+    for i2 := 0 to 11 do // горизонтальное сканирование
+     begin
+      buf:= (buf +'{'); // приставка
+      for i1 := bitmap.Height - 1 downto 0 do  //вертикальное сканирование
+       begin
+        if i1=0 then  // конечна€ приставка
+         zap:='}'
+        else
+         zap:='},';
+        buf:=(buf+'{'+inttostr(bitarr[i1][i2].rgbtred)+', '+inttostr(bitarr[i1][i2].rgbtgreen)+', '+inttostr(bitarr[i1][i2].rgbtBlue)+zap);
+       end;
+     buf:= (buf +'},');
+     memo1.Lines.Add(buf);
+     buf:='';  //очистка буфера
+    end;
+    memo1.Lines.Add('},');
+   end;
+  ;
+
+end;
+
+procedure TForm2.TB1Change(Sender: TObject);
+begin
+ if sozd[tb1.Position] then
+  image1.Canvas.CopyRect(Image1.Canvas.ClipRect,btm[tb1.Position].canvas,Btm[tb1.Position].Canvas.ClipRect )
+  else
+  image1.Picture.Bitmap.FreeImage;
+end;
+
+end.

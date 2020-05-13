@@ -1,0 +1,65 @@
+unit Unit1;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls,
+  Vcl.Imaging.pngimage;
+
+type
+  TForm1 = class(TForm)
+    Image1: TImage;
+    ColorBox1: TColorBox;
+    one: TButton;
+    ListBox1: TListBox;
+    two: TButton;
+    one_safe: TButton;
+    two_safe: TButton;
+    procedure Image1MouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure oneClick(Sender: TObject);
+    procedure twoClick(Sender: TObject);
+    procedure two_safeClick(Sender: TObject);
+    procedure one_safeClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+  Anim_mas : array [1..10] of tbitmap;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.oneClick(Sender: TObject);
+begin
+ image1.picture.Bitmap.Canvas.Draw(0,0,anim_mas[1]);
+end;
+
+procedure TForm1.one_safeClick(Sender: TObject);
+begin
+ anim_mas [1]:= image1.Picture.Bitmap;
+end;
+
+procedure TForm1.twoClick(Sender: TObject);
+begin
+ image1.picture.bitmap.Canvas.Draw(0,0,anim_mas[2]);
+end;
+
+procedure TForm1.two_safeClick(Sender: TObject);
+begin
+ anim_mas [2]:= image1.Picture.Bitmap;
+end;
+
+procedure TForm1.Image1MouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+ image1.Canvas.Pixels[x div 20,y div 20]:=colorbox1.Selected;
+end;
+
+end.

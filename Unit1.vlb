@@ -1,0 +1,14 @@
+﻿[Image1]
+Coordinates=190,10,57,58
+ExplicitSubNodes=
+
+[ColorBox1]
+Coordinates=257,10,75,58
+
+[]
+Coordinates=10,10,101,124
+Visible=True
+
+[one]
+Coordinates=121,10,59,58
+
